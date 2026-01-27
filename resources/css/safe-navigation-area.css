@@ -1,0 +1,4 @@
+/* Support safe area (HP Android & iOS) */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}

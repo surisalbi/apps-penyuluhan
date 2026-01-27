@@ -1,0 +1,22 @@
+@layer components {
+    .tab-btn {
+        flex: 1;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6b7280;
+        border-top: 2px solid transparent;
+    }
+    .tab-btn.active {
+        color: #2e7d32 !important;
+        border-top-color: #2e7d32 !important;
+        background: linear-gradient(to bottom, #d9ffdb, #fff) !important;
+    }
+    .photo-item {
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 12px;
+        cursor: pointer;
+        background: #e5e7eb;
+    }
+}
