@@ -36,7 +36,17 @@
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     @error('failed')
-                        {{ $message }}
+                        <!-- Alert statis -->
+                        <div class="w-full max-w-sm mx-auto bg-amber-100 border border-amber-400 text-amber-800 px-4 py-3 rounded-lg flex items-center space-x-3 mt-4" role="alert">
+                            <!-- Icon -->
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"></path>
+                            </svg>
+
+                            <!-- Message -->
+                            <span class="font-medium">{{ $message }}</span>
+                        </div>
+
                     @enderror
                     <!-- Input -->
                     <div class="mt-8">
