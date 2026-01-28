@@ -3,7 +3,7 @@
 <!-- Header -->
 <header class="sticky top-0 z-10 bg-white shadow-sm">
     <div class="px-4 py-4 flex items-center justify-between bg-white">
-        <h1 class="text-lg font-semibold">Screenshot</h1>
+        <h1 class="text-lg font-semibold">Upload Screenshot</h1>
         <button onclick="openUploadModal()" class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white bg-emerald-500 rounded-full shadow hover:bg-emerald-700 transition">
             <i class="fas fa-upload text-sm"></i>
         </button>

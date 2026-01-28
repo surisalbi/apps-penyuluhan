@@ -23,11 +23,19 @@ Route::get('/', [HomeController::class, 'index'])->name('home')
 
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/absensi/facecam', [AbsensiController::class, 'facecam'])->name('absensi.facecam')
+->middleware(['auth', 'otp_verified', 'role:user']);
 
 Route::get('/upload', [UploadController::class, 'index'])->name('upload')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
 Route::get('/akun', [AkunController::class, 'index'])->name('akun')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/akun/profil', [AkunController::class, 'profil'])->name('akun.profil')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/akun/kebijakan', [AkunController::class, 'kebijakan'])->name('akun.kebijakan')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/akun/tentang', [AkunController::class, 'tentang'])->name('akun.tentang')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
 // Authentication

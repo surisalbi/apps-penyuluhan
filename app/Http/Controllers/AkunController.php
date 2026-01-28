@@ -6,29 +6,28 @@ use Illuminate\Http\Request;
 
 class AkunController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $title = "Akun";
         return view('akun.index', compact('title'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function profil()
     {
-        //
+        $title = "Profil";
+        return view('akun.profil', compact('title'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function kebijakan()
     {
-        //
+        $title = "Kebijakan Privasi";
+        return view('akun.kebijakan_privasi', compact('title'));
+    }
+
+    public function tentang()
+    {
+        $title = "Tentang";
+        return view('akun.tentang', compact('title'));
     }
 
     /**

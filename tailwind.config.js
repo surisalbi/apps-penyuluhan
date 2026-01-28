@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from "tailwindcss/defaultTheme";
 export default {
     content: [
         "./resources/**/*.blade.php",
@@ -14,6 +15,9 @@ export default {
             },
             borderRadius: {
                 big: "3rem",
+            },
+            fontFamily: {
+                sans: ["Inter", ...defaultTheme.fontFamily.sans],
             },
         },
     },

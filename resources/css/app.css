@@ -2,6 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "./facecam.css";
-@import "./safe-navigation-area.css";
+@layer components {
+    .scan-line {
+        position: absolute;
+        top: 10%;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        animation: scan 2.5s linear infinite;
+    }
+}
+
+@keyframes scan {
+    0% {
+        top: 10%;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    50% {
+        top: 80%;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        top: 10%;
+        opacity: 0;
+    }
+}
+
 @import "./upload.css";

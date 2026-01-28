@@ -41,7 +41,7 @@
         </div>
 
         <!-- OTP Input -->
-        <form action="{{ route('verify.process') }}" method="post" class="space-y-6">
+        <form action="{{ route('verify.process') }}" method="post" class="space-y-6" onsubmit="handleSubmit()">
             @csrf
             @error('failed')
                 <!-- Alert statis -->
@@ -68,8 +68,8 @@
             <input type="hidden" name="otp" id="otp-full">
 
             <!-- Submit Button -->
-            <button type="submit" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition">
-                Verifikasi
+            <button type="submit" id="loginBtn" class="w-full py-3 bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold rounded-xl shadow-lg hover:from-green-600 hover:to-green-800 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed">
+                <span id="btnText">Verifikasi</span>
             </button>
         </form>
 
@@ -103,6 +103,16 @@
                 e.preventDefault();
             });
         });
+    </script>
+
+    <script>
+        function handleSubmit() {
+            const btn = document.getElementById('loginBtn');
+            const text = document.getElementById('btnText');
+
+            btn.disabled = true;
+            text.textContent = 'Sedang verifikasi...';
+        }
     </script>
 </body>
 </html>

@@ -27,7 +27,7 @@
             Hari ini, <span id="tanggal"></span>
         </p>
         <!-- Time Info -->
-        <div class="flex justify-center items-center gap-10 text-center border border-1 border-gray-100 shadow-2xl rounded-2xl pt-4 pb-3 mb-10">
+        <div class="flex justify-center items-center gap-10 text-center border border-1 border-gray-200 shadow-2xl rounded-2xl pt-4 pb-3 mb-10">
             <div>
                 <p class="text-primary text-sm font-medium">
                     <i class="fas fa-clock"></i> In Time
@@ -46,7 +46,7 @@
         </div>
 
         <!-- Button -->
-        <button onclick="window.location.href = 'facecam.html'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
+        <button onclick="window.location.href = '{{ route('absensi.facecam') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
             <i class="fas fa-sign-in-alt pe-1"></i> Check In Time
         </button>
     </div>

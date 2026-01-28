@@ -16,19 +16,18 @@
         <div class="bg-white rounded-xl border border-1 border-gray-250 shadow p-4">
             <div class="flex justify-between items-center mb-3">
                 <div>
-                    <p class="font-semibold">24 Januari 2026</p>
+                    <p class="font-medium text-sm text-gray-700">24 Januari 2026</p>
                 </div>
-                <span class="text-xs font-medium px-3 py-1 rounded-full bg-amber-100 text-success">Proses</span>
                 <span class="text-xs font-medium px-3 py-1 rounded-full bg-green-100 text-success">Selesai</span>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <p class="text-xs text-gray-500">Absen Pagi</p>
-                    <p class="font-medium text-success">07:58</p>
+                    <p class="font-medium text-success text-gray-700">07:58</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500">Absen Pulang</p>
-                    <p class="font-medium text-success">17:02</p>
+                    <p class="font-medium text-success text-gray-700">17:02</p>
                 </div>
             </div>
         </div>

@@ -15,6 +15,12 @@ class AbsensiController extends Controller
         return view('absensi.index', compact('title'));
     }
 
+    public function facecam()
+    {
+        $title = "Face Cam";
+        return view('absensi.facecam', compact('title'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
