@@ -163,67 +163,6 @@
 
 @push('scripts')
     @include('upload.toast')
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-        const modal = document.getElementById("photo-modal");
-        const modalImg = document.getElementById("modal-img");
-        let currentPhotoId = null;
-
-        if (!modal || !modalImg) return;
-
-        document.querySelectorAll(".photo-item").forEach((img) => {
-            img.addEventListener("click", () => {
-                modalImg.src = img.src;
-                currentPhotoId = img.dataset.id || null;
-                modal.classList.remove("hidden");
-                modal.classList.add("flex");
-            });
-        });
-
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                modal.classList.add("hidden");
-                modal.classList.remove("flex");
-                currentPhotoId = null;
-            }
-        });
-
-        // tombol delete langsung hapus tanpa confirm
-        const deleteBtn = document.getElementById("delete-btn");
-        if (deleteBtn) {
-            deleteBtn.addEventListener("click", () => {
-                if (!currentPhotoId) return;
-
-                fetch(`/upload/${currentPhotoId}`, {
-                    method: "DELETE",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector(
-                            'meta[name="csrf-token"]'
-                        ).content,
-                    },
-                })
-                    .then((res) => res.json())
-                    .then((res) => {
-                        if (res.status === "success") {
-                            // hapus elemen foto dari DOM
-                            const imgToRemove = document.querySelector(
-                                `.photo-item[data-id="${currentPhotoId}"]`
-                            );
-                            if (imgToRemove) imgToRemove.parentElement.remove();
-                            currentPhotoId = null;
-                            modal.classList.add("hidden");
-                            modal.classList.remove("flex");
-                            showToast("success", "Foto berhasil dihapus");
-                        } else {
-                            showToast("error", res.message ?? "Gagal hapus foto");
-                        }
-                    })
-                    .catch(() => showToast("error", "Gagal hapus foto"));
-            });
-        }
-    });
-
-    </script>
 @endpush
 
 @endsection

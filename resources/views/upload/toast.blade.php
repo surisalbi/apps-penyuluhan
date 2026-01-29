@@ -201,6 +201,68 @@
     }
 </script>
 
+<script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("photo-modal");
+        const modalImg = document.getElementById("modal-img");
+        let currentPhotoId = null;
+
+        if (!modal || !modalImg) return;
+
+        document.querySelectorAll(".photo-item").forEach((img) => {
+            img.addEventListener("click", () => {
+                modalImg.src = img.src;
+                currentPhotoId = img.dataset.id || null;
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+            });
+        });
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                currentPhotoId = null;
+            }
+        });
+
+        // tombol delete langsung hapus tanpa confirm
+        const deleteBtn = document.getElementById("delete-btn");
+        if (deleteBtn) {
+            deleteBtn.addEventListener("click", () => {
+                if (!currentPhotoId) return;
+
+                fetch(`/upload/${currentPhotoId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector(
+                            'meta[name="csrf-token"]'
+                        ).content,
+                    },
+                })
+                .then((res) => res.json())
+                .then((res) => {
+                    if (res.status === "success") {
+                        // hapus elemen foto dari DOM
+                        const imgToRemove = document.querySelector(
+                            `.photo-item[data-id="${currentPhotoId}"]`
+                        );
+                        if (imgToRemove) imgToRemove.parentElement.remove();
+                        currentPhotoId = null;
+                        modal.classList.add("hidden");
+                        modal.classList.remove("flex");
+                        showToast("success", "Foto berhasil dihapus");
+                    } else {
+                        showToast("error", res.message ?? "Gagal hapus foto");
+                    }
+                })
+                .catch(() => showToast("error", "Gagal hapus foto"));
+            });
+        }
+    });
+
+</script>
+
 
 <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[calc(100%-2rem)] rounded-xl shadow-xl border border-white/20 transition-all duration-300 opacity-0 -translate-y-3">
     <div class="flex items-center gap-3 px-4 py-3">
