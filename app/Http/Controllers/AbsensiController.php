@@ -45,12 +45,25 @@ class AbsensiController extends Controller
         $image = str_replace('data:image/jpeg;base64,', '', $request->photo);
         $image = base64_decode($image);
 
-        $filename = 'absen_' . time() . '.jpg';
-        Storage::disk('public')->put('absensi/in/' . $filename, $image);
+        $filename = 'absen_in_' . time() . '.jpg';
+
+        // Tentukan folder tujuan di public
+        $folder = public_path('uploads/absensi/in');
+
+        // Buat folder kalau belum ada
+        if (!file_exists($folder)) {
+            mkdir($folder, 0755, true);
+        }
+
+        // Simpan file langsung ke public folder
+        file_put_contents($folder . '/' . $filename, $image);
+
+        // Path relatif untuk database
+        $relativePath = 'uploads/absensi/in/' . $filename;
 
         Absensi::create([
             'user_id'   => auth()->user()->id,
-            'foto_in'   => 'absensi/in/' . $filename,
+            'foto_in'   => $relativePath,
             'clock_in'  => Carbon::now('Asia/Jakarta'),
             'latitude_in'  => $request->latitude,
             'longitude_in' => $request->longitude,
@@ -73,8 +86,21 @@ class AbsensiController extends Controller
         $image = str_replace('data:image/jpeg;base64,', '', $request->photo);
         $image = base64_decode($image);
 
-        $filename = 'absen_' . time() . '.jpg';
-        Storage::disk('public')->put('absensi/out/' . $filename, $image);
+        $filename = 'absen_out_' . time() . '.jpg';
+        
+        // Tentukan folder tujuan di public
+        $folder = public_path('uploads/absensi/out');
+
+        // Buat folder kalau belum ada
+        if (!file_exists($folder)) {
+            mkdir($folder, 0755, true);
+        }
+
+        // Simpan file langsung ke public folder
+        file_put_contents($folder . '/' . $filename, $image);
+
+        // Path relatif untuk database
+        $relativePath = 'uploads/absensi/out/' . $filename;
 
         $absensi = Absensi::where('user_id', auth()->user()->id)
         ->whereDate('created_at', Carbon::today())
@@ -88,7 +114,7 @@ class AbsensiController extends Controller
         }
 
         $absensi->update([
-            'foto_out'   => 'absensi/out/' . $filename,
+            'foto_out'   => $relativePath,
             'clock_out'  => Carbon::now('Asia/Jakarta'),
             'latitude_out'  => $request->latitude,
             'longitude_out' => $request->longitude,

@@ -31,7 +31,7 @@
     <section class="tab-content grid grid-cols-2 gap-3" id="like">
         @foreach ($like_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset('storage/' . $row->screenshot) }}"/>
+            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset($row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
@@ -47,7 +47,7 @@
     <section class="tab-content hidden grid grid-cols-2 gap-3" id="comment">
         @foreach ($comment_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset('storage/' . $row->screenshot) }}"/>
+            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset($row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
@@ -63,7 +63,7 @@
     <section class="tab-content hidden grid grid-cols-2 gap-3" id="share">
         @foreach ($share_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset('storage/' . $row->screenshot) }}"/>
+            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset($row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>

@@ -44,22 +44,30 @@ class UploadController extends Controller
         $paths = [];
 
         foreach ($request->file('screenshot') as $file) {
+            // Buat nama file unik
             $filename = uniqid('img_') . '.' . $file->getClientOriginalExtension();
-
-            $path = $file->storeAs(
-                'uploads/screenshots',
-                $filename,
-                'public'
-            );
-
-            $paths[] = $path;
+        
+            // Folder tujuan di public
+            $folder = public_path('uploads/screenshots');
+        
+            // Buat folder jika belum ada
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+        
+            // Pindahkan file ke public folder
+            $file->move($folder, $filename);
+        
+            // Path relatif untuk database
+            $relativePath = 'uploads/screenshots/' . $filename;
+            $paths[] = $relativePath;
 
             // Kalau mau simpan ke DB per file
             
             Upload::create([
                 'user_id' => auth()->user()->id,
                 'kategori' => $request->kategori,
-                'screenshot' => $path,
+                'screenshot' => $relativePath,
             ]);
         }
 
@@ -82,9 +90,11 @@ class UploadController extends Controller
             ], 404);
         }
 
-        // Hapus file dari storage (folder public/uploads/screenshots)
-        if (Storage::disk('public')->exists($upload->screenshot)) {
-            Storage::disk('public')->delete($upload->screenshot);
+        // Hapus file dari public
+        $path = public_path($upload->screenshot); // path lengkap ke file
+
+        if (file_exists($path)) {
+            unlink($path); // hapus file
         }
 
         // Hapus record dari DB
