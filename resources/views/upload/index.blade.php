@@ -36,7 +36,7 @@
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
                 <p class="text-xs text-white font-normal">
-                    {{ substr($row->created_at, 11,5) }} · {{ $row->created_at->translatedFormat('d M Y') }}
+                    {{ substr($row->created_at, 11,5) }} &#183; {{ $row->created_at->translatedFormat('d M Y') }}
                 </p>
             </div>
         </div>
@@ -52,7 +52,7 @@
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
                 <p class="text-xs text-white font-normal">
-                    {{ substr($row->created_at, 11,5) }} · {{ $row->created_at->translatedFormat('d M Y') }}
+                    {{ substr($row->created_at, 11,5) }} &#183; {{ $row->created_at->translatedFormat('d M Y') }}
                 </p>
             </div>
         </div>
@@ -68,7 +68,7 @@
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
                 <p class="text-xs text-white font-normal">
-                    {{ substr($row->created_at, 11,5) }} · {{ $row->created_at->translatedFormat('d M Y') }}
+                    {{ substr($row->created_at, 11,5) }} &#183; {{ $row->created_at->translatedFormat('d M Y') }}
                 </p>
             </div>
         </div>
@@ -100,6 +100,20 @@
 
         <!-- Content -->
         <div class="p-6 space-y-6">
+            <!-- Progress Wrapper -->
+            <div id="progressWrapper" class="mt-4 hidden">
+                <div class="flex justify-between text-xs mb-1">
+                    <span id="progressLabel" class="text-gray-600">Mengunggah...</span>
+                    <span id="progressText" class="text-gray-600">0%</span>
+                </div>
+
+                <div class="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                        id="progressBar"
+                        class="h-full w-0 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all duration-300 ease-out"
+                    ></div>
+                </div>
+            </div>
             <!-- Action -->
             <form id="uploadForm" method="POST" action="{{ route('upload.store') }}" enctype="multipart/form-data">
                 <!-- Drag Area -->
@@ -127,7 +141,7 @@
                 </div>
 
                 <!-- Info -->
-                <p class="text-xs text-gray-500 text-center">Format JPG, PNG · Maks 5MB</p>
+                <p class="text-xs text-gray-500 text-center">Format JPG, PNG &#183; Maks 5MB</p>
 
                 
                 <!-- Hidden Input -->
