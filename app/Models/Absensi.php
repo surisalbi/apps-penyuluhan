@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Absensi extends Model
+{
+    use HasFactory;
+
+    protected $table = 'absensi';
+    protected $fillable = ['user_id','clock_in','clock_out','foto_in','foto_out','latitude','longitude'];
+}

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Absensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
 {
@@ -22,19 +25,34 @@ class AbsensiController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'photo' => 'required',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
+        ]);
+
+        // Decode base64 image
+        $image = str_replace('data:image/jpeg;base64,', '', $request->photo);
+        $image = base64_decode($image);
+
+        $filename = 'absen_' . time() . '.jpg';
+        Storage::disk('public')->put('absensi/in/' . $filename, $image);
+
+        Absensi::create([
+            'user_id'   => auth()->user()->id,
+            'foto_in'   => 'absensi/' . $filename,
+            'clock_in'  => Carbon::now('Asia/Jakarta'),
+            'latitude'  => $request->latitude,
+            'longitude' => $request->longitude,
+        ]);
+
+        return response()->json([
+            'status' => 'success'
+        ]);
     }
 
     /**

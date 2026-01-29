@@ -30,18 +30,30 @@
         <div class="flex justify-center items-center gap-10 text-center border border-1 border-gray-200 shadow-2xl rounded-2xl pt-4 pb-3 mb-10">
             <div>
                 <p class="text-primary text-sm font-medium">
-                    <i class="fas fa-clock"></i> In Time
+                    <i class="fas fa-sign-in-alt"></i> In Time
                 </p>
-                <p class="text-gray-400 text-sm">00:00</p>
+                <p class="text-gray-500 text-sm">
+                    @if($absensi)
+                        {{ $absensi->clock_in ? substr($absensi->clock_in, 0, 5) : '-' }}
+                    @else
+                        -
+                    @endif
+                </p>
             </div>
 
             <div class="w-px h-10 bg-gray-300"></div>
 
             <div>
                 <p class="text-amber-500 text-sm font-medium">
-                    <i class="fas fa-clock"></i> Out Time
+                    <i class="fas fa-sign-out-alt"></i> Out Time
                 </p>
-                <p class="text-gray-400 text-sm">00:00</p>
+                <p class="text-gray-500 text-sm">
+                    @if($absensi)
+                        {{ $absensi->clock_out ? substr($absensi->clock_out, 0, 5) : '-' }}
+                    @else
+                        -
+                    @endif
+                </p>
             </div>
         </div>
 

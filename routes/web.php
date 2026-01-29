@@ -25,6 +25,8 @@ Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::get('/absensi/facecam', [AbsensiController::class, 'facecam'])->name('absensi.facecam')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store')
+->middleware(['auth', 'otp_verified', 'role:user']);
 
 Route::get('/upload', [UploadController::class, 'index'])->name('upload')
 ->middleware(['auth', 'otp_verified', 'role:user']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absensi;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,7 +13,8 @@ class HomeController extends Controller
     public function index()
     {
         $title = "Home";
-        return view('home.index', compact('title'));
+        $absensi = Absensi::select('user_id','clock_in','clock_out')->where('user_id', auth()->user()->id)->first();
+        return view('home.index', compact('title', 'absensi'));
     }
 
     /**
