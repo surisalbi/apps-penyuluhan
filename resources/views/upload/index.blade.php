@@ -82,7 +82,10 @@
     <div class="relative">
         <!-- Delete Button -->
         <button id="delete-btn" class="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 shadow-2xl hover:bg-gray-300 transition" title="Hapus Foto">
-            <i class="fas fa-trash text-sm"></i>
+            <i class="fas fa-trash text-sm text-red-500"></i>
+        </button>
+        <button id="closeModal" class="absolute top-3 left-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 shadow-2xl hover:bg-gray-300 transition" title="Tutup">
+            <i class="fas fa-times text-sm"></i>
         </button>
         <!-- Image -->
         <img id="modal-img" class="max-w-[90vw] max-h-[90vh] rounded-xl shadow-lg"/>

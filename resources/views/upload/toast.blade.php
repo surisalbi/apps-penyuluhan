@@ -205,7 +205,13 @@
         document.addEventListener("DOMContentLoaded", () => {
         const modal = document.getElementById("photo-modal");
         const modalImg = document.getElementById("modal-img");
+        const closeBtn = document.getElementById('closeModal');
         let currentPhotoId = null;
+
+        // Close modal saat tombol X diklik
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
 
         if (!modal || !modalImg) return;
 
