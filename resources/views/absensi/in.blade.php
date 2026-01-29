@@ -17,7 +17,7 @@
     <!-- Content -->
     <div class="flex flex-col items-center justify-center p-6">
         <!-- Camera Container -->
-        <div class="relative w-80 aspect-[9/16] overflow-hidden bg-black shadow-lg rounded-2xl">
+        <div class="relative w-80 aspect-[9/14] overflow-hidden bg-black shadow-lg rounded-2xl">
             <!-- Camera -->
             <video id="camera" autoplay muted playsinline class="w-full h-full object-cover scale-x-[-1]"></video>
             <canvas id="canvas" class="hidden w-full h-full"></canvas>

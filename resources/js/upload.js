@@ -42,26 +42,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     showTab(0);
-
-    // =========================
-    // MODAL PREVIEW
-    // =========================
-    const modal = document.getElementById("photo-modal");
-    const modalImg = document.getElementById("modal-img");
-
-    // Modal tidak ada → STOP
-    if (!modal || !modalImg) return;
-
-    document.querySelectorAll(".photo-item").forEach((img) => {
-        img.addEventListener("click", () => {
-            modalImg.src = img.src;
-            modal.classList.remove("hidden");
-            modal.classList.add("flex");
-        });
-    });
-
-    modal.addEventListener("click", () => {
-        modal.classList.add("hidden");
-        modal.classList.remove("flex");
-    });
 });

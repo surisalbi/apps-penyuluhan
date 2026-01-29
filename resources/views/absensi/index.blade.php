@@ -3,10 +3,9 @@
 <!-- Phone Frame -->
 <div class="w-full bg-white">
     <!-- Header -->
-    <div class="flex items-center gap-3 px-3 py-4 border-b bg-gray-100">
-        <h1 class="text-lg font-semibold text-gray-700 ms-3">
-            <i class="fas fa-calendar me-2"></i> Absensi
-        </h1>
+    <div class="flex items-center gap-3 px-4 py-4 border-b bg-gray-100">
+        <h1 class="flex flex-1 text-lg font-semibold text-gray-700">Absensi</h1>
+        <a href="" class="text-gray-700"><i class="fas fa-calendar"></i></a>
     </div>
     <!-- Content -->
     <main class="px-4 py-4 space-y-4 pb-24">
@@ -15,7 +14,7 @@
         </p>
         @foreach ($absensi as $row)
         <!-- Card -->
-        <div class="bg-white rounded-xl border border-1 border-gray-250 shadow p-4">
+        <div class="{{ $loop->first ? 'bg-gray-100' : '' }} rounded-xl {{ $loop->first ? 'border-2' : 'border border-1' }} border-gray-250 p-4">
             <div class="flex justify-between items-center mb-3">
                 <div>
                     <p class="font-medium text-sm text-gray-700">
@@ -42,11 +41,11 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <p class="text-xs text-gray-500">Absen Pagi</p>
-                    <p class="font-medium text-gray-700">07:58</p>
+                    <p class="font-medium text-gray-700">{{ substr($row->clock_in,0,5) }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-gray-500">Absen Pulang</p>
-                    <p class="font-medium text-gray-700">17:02</p>
+                    <p class="font-medium text-gray-700">{{ $row->clock_out ? substr($row->clock_out,0,5) : '-' }}</p>
                 </div>
             </div>
         </div>

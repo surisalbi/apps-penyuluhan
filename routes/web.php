@@ -47,6 +47,8 @@ Route::get('/upload', [UploadController::class, 'index'])->name('upload')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::post('/upload/store', [UploadController::class, 'store'])->name('upload.store')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::delete('/upload/{id}', [UploadController::class, 'destroy'])->name('upload.destroy')
+->middleware(['auth', 'otp_verified', 'role:user']);
 
 Route::get('/akun', [AkunController::class, 'index'])->name('akun')
 ->middleware(['auth', 'otp_verified', 'role:user']);

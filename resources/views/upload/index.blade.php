@@ -31,11 +31,13 @@
     <section class="tab-content grid grid-cols-2 gap-3" id="like">
         @foreach ($like_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item"/>
+            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset('storage/' . $row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                <p class="text-sm text-white font-medium">09:15 · 26 Jan 2026</p>
-                <p class="text-xs text-gray-200 truncate">Jakarta, Indonesia</p>
+                <p>&nbsp;</p>
+                <p class="text-xs text-white font-normal">
+                    {{ substr($row->created_at, 11,5) }} · {{ $row->created_at->translatedFormat('d M Y') }}
+                </p>
             </div>
         </div>
         @endforeach
@@ -45,11 +47,13 @@
     <section class="tab-content hidden grid grid-cols-2 gap-3" id="comment">
         @foreach ($comment_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item"/>
+            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset('storage/' . $row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                <p class="text-sm text-white font-medium">09:15 · 26 Jan 2026</p>
-                <p class="text-xs text-gray-200 truncate">Jakarta, Indonesia</p>
+                <p>&nbsp;</p>
+                <p class="text-xs text-white font-normal">
+                    {{ substr($row->created_at, 11,5) }} · {{ $row->created_at->translatedFormat('d M Y') }}
+                </p>
             </div>
         </div>
         @endforeach
@@ -59,11 +63,13 @@
     <section class="tab-content hidden grid grid-cols-2 gap-3" id="share">
         @foreach ($share_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item"/>
+            <img src="{{ asset('storage/' . $row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset('storage/' . $row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                <p class="text-sm text-white font-medium">09:15 · 26 Jan 2026</p>
-                <p class="text-xs text-gray-200 truncate">Jakarta, Indonesia</p>
+                <p>&nbsp;</p>
+                <p class="text-xs text-white font-normal">
+                    {{ substr($row->created_at, 11,5) }} · {{ $row->created_at->translatedFormat('d M Y') }}
+                </p>
             </div>
         </div>
         @endforeach
@@ -126,7 +132,7 @@
                 
                 <!-- Hidden Input -->
                 <input type="file" name="screenshot[]" id="file-input" accept="image/*" class="hidden" multiple/>
-                <select name="kategori" id="" class="mb-5 text-gray-700 focus:border-transparent focus:ring-0 outline-none">
+                <select name="kategori" id="" class="mt-5 mb-5 text-gray-700 focus:border-transparent focus:ring-0 outline-none">
                     <option value="" disabled selected>Pilih Kategori</option>
                     <option value="like">Like</option>
                     <option value="comment">Comment</option>
@@ -157,6 +163,67 @@
 
 @push('scripts')
     @include('upload.toast')
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        const modal = document.getElementById("photo-modal");
+        const modalImg = document.getElementById("modal-img");
+        let currentPhotoId = null;
+
+        if (!modal || !modalImg) return;
+
+        document.querySelectorAll(".photo-item").forEach((img) => {
+            img.addEventListener("click", () => {
+                modalImg.src = img.src;
+                currentPhotoId = img.dataset.id || null;
+                modal.classList.remove("hidden");
+                modal.classList.add("flex");
+            });
+        });
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                currentPhotoId = null;
+            }
+        });
+
+        // tombol delete langsung hapus tanpa confirm
+        const deleteBtn = document.getElementById("delete-btn");
+        if (deleteBtn) {
+            deleteBtn.addEventListener("click", () => {
+                if (!currentPhotoId) return;
+
+                fetch(`/upload/${currentPhotoId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector(
+                            'meta[name="csrf-token"]'
+                        ).content,
+                    },
+                })
+                    .then((res) => res.json())
+                    .then((res) => {
+                        if (res.status === "success") {
+                            // hapus elemen foto dari DOM
+                            const imgToRemove = document.querySelector(
+                                `.photo-item[data-id="${currentPhotoId}"]`
+                            );
+                            if (imgToRemove) imgToRemove.parentElement.remove();
+                            currentPhotoId = null;
+                            modal.classList.add("hidden");
+                            modal.classList.remove("flex");
+                            showToast("success", "Foto berhasil dihapus");
+                        } else {
+                            showToast("error", res.message ?? "Gagal hapus foto");
+                        }
+                    })
+                    .catch(() => showToast("error", "Gagal hapus foto"));
+            });
+        }
+    });
+
+    </script>
 @endpush
 
 @endsection

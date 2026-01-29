@@ -202,15 +202,9 @@
 </script>
 
 
-<div id="toast"
-     class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden
-            max-w-sm w-[calc(100%-2rem)]
-            rounded-xl shadow-xl border border-white/20
-            transition-all duration-300 opacity-0 -translate-y-3">
+<div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[calc(100%-2rem)] rounded-xl shadow-xl border border-white/20 transition-all duration-300 opacity-0 -translate-y-3">
     <div class="flex items-center gap-3 px-4 py-3">
-        <div id="toast-icon"
-             class="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white">
-        </div>
+        <div id="toast-icon" class="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white"></div>
         <p id="toast-message" class="flex-1 text-sm font-medium text-white"></p>
     </div>
 </div>
