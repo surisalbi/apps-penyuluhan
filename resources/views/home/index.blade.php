@@ -57,10 +57,16 @@
             </div>
         </div>
 
-        <!-- Button -->
-        <button onclick="window.location.href = '{{ route('absensi.facecam') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
-            <i class="fas fa-sign-in-alt pe-1"></i> Check In Time
-        </button>
+        @if (!$absensi)
+            <button onclick="window.location.href = '{{ route('absensi.in') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
+                <i class="fas fa-sign-in-alt pe-1"></i> Check In Time
+            </button>
+        @elseif($absensi && !$absensi->clock_out)
+            <button onclick="window.location.href = '{{ route('absensi.out') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
+                <i class="fas fa-sign-in-alt pe-1"></i> Check Out Time
+            </button>
+        @else
+        @endif
     </div>
 </div>
 

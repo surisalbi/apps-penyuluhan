@@ -10,5 +10,5 @@ class Absensi extends Model
     use HasFactory;
 
     protected $table = 'absensi';
-    protected $fillable = ['user_id','clock_in','clock_out','foto_in','foto_out','latitude','longitude'];
+    protected $fillable = ['user_id','clock_in','clock_out','foto_in','foto_out','latitude_in','longitude_in','latitude_out','longitude_out'];
 }

@@ -18,17 +18,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Homepage
 Route::get('/', [HomeController::class, 'index'])->name('home')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
+// Data Absensi
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi')
 ->middleware(['auth', 'otp_verified', 'role:user']);
-Route::get('/absensi/facecam', [AbsensiController::class, 'facecam'])->name('absensi.facecam')
-->middleware(['auth', 'otp_verified', 'role:user']);
-Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store')
+
+// Facecam Absen Pagi
+Route::get('/absensi/in', [AbsensiController::class, 'in'])->name('absensi.in')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
+// Store Absen Pagi
+Route::post('/absensi/store-in', [AbsensiController::class, 'store_in'])->name('absensi.store_in')
+->middleware(['auth', 'otp_verified', 'role:user']);
+
+// Facecam Absen Sore
+Route::get('/absensi/out', [AbsensiController::class, 'out'])->name('absensi.out')
+->middleware(['auth', 'otp_verified', 'role:user']);
+
+// Store Absen Sore
+Route::post('/absensi/store-out', [AbsensiController::class, 'store_out'])->name('absensi.store_out')
+->middleware(['auth', 'otp_verified', 'role:user']);
+
+// Upload Screenshot
 Route::get('/upload', [UploadController::class, 'index'])->name('upload')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::post('/upload/store', [UploadController::class, 'store'])->name('upload.store')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
 Route::get('/akun', [AkunController::class, 'index'])->name('akun')

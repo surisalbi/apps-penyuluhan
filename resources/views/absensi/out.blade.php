@@ -11,7 +11,7 @@
         <a href="{{ route('home') }}" class="p-2 text-gray-700 rounded-full hover:bg-gray-100 transition">
             <i class="fas fa-arrow-left"></i>
         </a>
-        <h1 class="text-lg font-semibold text-gray-700">Absensi</h1>
+        <h1 class="text-lg font-semibold text-gray-700">Absens Sore</h1>
     </div>
 
     <!-- Content -->
@@ -145,7 +145,7 @@
         btnSubmit.classList.add("opacity-50", "cursor-not-allowed");
 
         // Kirim data ke Laravel
-        fetch("/absensi/store", {
+        fetch("/absensi/store-out", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -159,20 +159,31 @@
         })
 
         .then(res => res.json())
-        .then(() => {
-            alert("Absen berhasil!");
-            window.location.href = "/";
+        .then(res => {
+            if (res.status === 'success') {
+                showToast(res.message ?? 'Berhasil', 'success');
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1500);
+            } else {
+                showToast(res.message ?? 'Gagal', 'error');
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1500);
+            }
         })
         .catch(() => {
             // Jika error, aktifkan tombol lagi
             btnSubmit.innerText = "Selesai";
             btnSubmit.disabled = false;
             btnSubmit.classList.remove("opacity-50", "cursor-not-allowed");
-            alert("Gagal menyimpan. Coba lagi!");
+            showToast('Terjadi kesalahan jaringan', 'error');
         });
     };
 
 </script>
+
+@include('absensi.toast')
 @endpush
 
 @endsection

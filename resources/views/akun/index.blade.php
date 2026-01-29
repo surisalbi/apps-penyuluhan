@@ -28,7 +28,7 @@
                 <span class="text-blue-500">
                     <i class="fas fa-user w-5"></i>
                 </span>
-                <span class="text-sm">Profil</span>
+                <span class="text-sm text-gray-700">Profil</span>
             </div>
             <span class="text-gray-400">›</span>
         </a>
@@ -38,7 +38,7 @@
                 <span class="text-amber-500">
                     <i class="fas fa-question-circle w-5"></i>
                 </span>
-                <span class="text-sm">Pusat Bantuan</span>
+                <span class="text-sm text-gray-700">Pusat Bantuan</span>
             </div>
             <span class="text-gray-400">›</span>
         </a>
@@ -48,7 +48,7 @@
                 <span class="text-emerald-500">
                     <i class="fas fa-user-shield w-5"></i>
                 </span>
-                <span class="text-sm">Kebijakan Privasi</span>
+                <span class="text-sm text-gray-700">Kebijakan Privasi</span>
             </div>
             <span class="text-gray-400">›</span>
         </a>
@@ -58,7 +58,7 @@
                 <span class="text-gray-700">
                     <i class="fas fa-info-circle w-5"></i>
                 </span>
-                <span class="text-sm">Tentang</span>
+                <span class="text-sm text-gray-700">Tentang</span>
             </div>
             <span class="text-gray-400">›</span>
         </a>

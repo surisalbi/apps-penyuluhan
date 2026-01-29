@@ -2,64 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Upload;
 use Illuminate\Http\Request;
 
 class UploadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $title = "Upload";
-        return view('upload.index', compact('title'));
+
+        $like_upload = Upload::select('id','kategori','screenshot')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'like')
+        ->get();
+
+        $comment_upload = Upload::select('id','kategori','screenshot')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'comment')
+        ->get();
+
+        $share_upload = Upload::select('id','kategori','screenshot')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'share')
+        ->get();
+
+        return view('upload.index', compact('title','like_upload','comment_upload','share_upload'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'kategori' => 'required|string',
+            'screenshot' => 'required|array',
+            'screenshot.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $paths = [];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        foreach ($request->file('screenshot') as $file) {
+            $filename = uniqid('img_') . '.' . $file->getClientOriginalExtension();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+            $path = $file->storeAs(
+                'uploads/screenshots',
+                $filename,
+                'public'
+            );
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            $paths[] = $path;
+
+            // Kalau mau simpan ke DB per file
+            
+            Upload::create([
+                'user_id' => auth()->user()->id,
+                'kategori' => $request->kategori,
+                'screenshot' => $path,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Upload berhasil',
+            'files' => $paths
+        ]);
     }
 }
