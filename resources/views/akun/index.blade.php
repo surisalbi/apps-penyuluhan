@@ -33,7 +33,7 @@
             <span class="text-gray-400">›</span>
         </a>
 
-        <a href="#" class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
+        <a href="{{ route('akun.bantuan') }}" class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition">
             <div class="flex items-center gap-3">
                 <span class="text-amber-500">
                     <i class="fas fa-question-circle w-5"></i>

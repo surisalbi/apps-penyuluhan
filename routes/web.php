@@ -25,6 +25,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home')
 // Data Absensi
 Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::post('/absensi', [AbsensiController::class, 'show'])->name('absensi.show')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/absensi/download/{bulan}', [AbsensiController::class, 'download'])->name('absensi.download')
+->middleware(['auth', 'otp_verified', 'role:user']);
 
 // Facecam Absen Pagi
 Route::get('/absensi/in', [AbsensiController::class, 'in'])->name('absensi.in')
@@ -32,6 +36,8 @@ Route::get('/absensi/in', [AbsensiController::class, 'in'])->name('absensi.in')
 
 // Store Absen Pagi
 Route::post('/absensi/store-in', [AbsensiController::class, 'store_in'])->name('absensi.store_in')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::post('/absensi/store-morning', [AbsensiController::class, 'store_morning'])->name('absensi.store_morning')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
 // Facecam Absen Sore
@@ -41,18 +47,25 @@ Route::get('/absensi/out', [AbsensiController::class, 'out'])->name('absensi.out
 // Store Absen Sore
 Route::post('/absensi/store-out', [AbsensiController::class, 'store_out'])->name('absensi.store_out')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::post('/absensi/store-afternoon', [AbsensiController::class, 'store_afternoon'])->name('absensi.store_afternoon')
+->middleware(['auth', 'otp_verified', 'role:user']);
 
 // Upload Screenshot
 Route::get('/upload', [UploadController::class, 'index'])->name('upload')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::post('/upload', [UploadController::class, 'show'])->name('upload.show')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::post('/upload/store', [UploadController::class, 'store'])->name('upload.store')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::delete('/upload/{id}', [UploadController::class, 'destroy'])->name('upload.destroy')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 
+// Akun
 Route::get('/akun', [AkunController::class, 'index'])->name('akun')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::get('/akun/profil', [AkunController::class, 'profil'])->name('akun.profil')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/akun/bantuan', [AkunController::class, 'bantuan'])->name('akun.bantuan')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::get('/akun/kebijakan', [AkunController::class, 'kebijakan'])->name('akun.kebijakan')
 ->middleware(['auth', 'otp_verified', 'role:user']);

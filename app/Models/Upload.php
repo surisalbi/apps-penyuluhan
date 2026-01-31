@@ -10,5 +10,5 @@ class Upload extends Model
     use HasFactory;
 
     protected $table = 'upload';
-    protected $fillable = ['user_id','kategori','screenshot'];
+    protected $fillable = ['user_id','kategori','screenshot','tanggal'];
 }

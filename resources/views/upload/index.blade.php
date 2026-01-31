@@ -27,6 +27,20 @@
 
 <!-- Content -->
 <main class="px-4 py-4 pb-24">
+    <form action="{{ route('upload.show') }}" method="post" class="flex mb-6">
+        @csrf
+        <select name="bulan" class="flex flex-1 border border-gray-300 rounded-lg px-2 py-2 text-gray-700">
+            <option value="" disabled selected>Tampilkan bulan</option>
+            @for ($i=1; $i <= 12; $i++)
+            <option value="{{ $i }}" {{ $i === (int) $bulan ? 'selected' : '' }}>
+                {{ \Carbon\Carbon::createFromDate(null, $i, 1)->translatedFormat('F') }}
+            </option>
+            @endfor
+        </select>
+        <button type="submit" class="ms-2 px-4 py-2 bg-gray-400 rounded-lg text-white">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
     <!-- Like -->
     <section class="tab-content grid grid-cols-2 gap-3" id="like">
         @foreach ($like_upload as $row)
@@ -36,7 +50,7 @@
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
                 <p class="text-xs text-white font-normal">
-                    {{ substr($row->created_at, 11,5) }} &#183; {{ $row->created_at->translatedFormat('d M Y') }}
+                    {{ \Carbon\Carbon::parse($row->tanggal)->locale('id')->translatedFormat('d M Y') }}
                 </p>
             </div>
         </div>
@@ -52,7 +66,7 @@
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
                 <p class="text-xs text-white font-normal">
-                    {{ substr($row->created_at, 11,5) }} &#183; {{ $row->created_at->translatedFormat('d M Y') }}
+                    {{ \Carbon\Carbon::parse($row->tanggal)->locale('id')->translatedFormat('d M Y') }}
                 </p>
             </div>
         </div>
@@ -68,7 +82,7 @@
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
                 <p class="text-xs text-white font-normal">
-                    {{ substr($row->created_at, 11,5) }} &#183; {{ $row->created_at->translatedFormat('d M Y') }}
+                    {{ \Carbon\Carbon::parse($row->tanggal)->locale('id')->translatedFormat('d M Y') }}
                 </p>
             </div>
         </div>
@@ -144,34 +158,20 @@
                 </div>
 
                 <!-- Info -->
-                <p class="text-xs text-gray-500 text-center">Format JPG, PNG &#183; Maks 5MB</p>
+                <p class="text-xs text-gray-500 text-center mt-3">Format JPG, PNG &#183; Maks 5MB</p>
 
                 
                 <!-- Hidden Input -->
                 <input type="file" name="screenshot[]" id="file-input" accept="image/*" class="hidden" multiple/>
-                <select name="kategori" id="" class="mt-5 mb-5 text-gray-700 focus:border-transparent focus:ring-0 outline-none">
+                <select name="kategori" id="" class="border border-gray-400 rounded-lg w-full p-[14px] mt-5 mb-5 text-gray-700">
                     <option value="" disabled selected>Pilih Kategori</option>
                     <option value="like">Like</option>
                     <option value="comment">Comment</option>
                     <option value="share">Share</option>
                 </select>
+                <input type="date" name="tanggal" class="border border-gray-400 rounded-lg w-full p-3 mb-5 text-gray-700">
                 <button id="uploadBtn" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">Upload</button>
-
-
-                <!-- Progress Wrapper -->
-                <div id="progressWrapper" class="mt-4 hidden">
-                    <div class="flex justify-between text-xs mb-1">
-                        <span id="progressLabel" class="text-gray-600">Mengunggah...</span>
-                        <span id="progressText" class="text-gray-600">0%</span>
-                    </div>
-
-                    <div class="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                            id="progressBar"
-                            class="h-full w-0 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all duration-300 ease-out"
-                        ></div>
-                    </div>
-                </div>
+                <button id="uploadBtnProcess" class="hidden w-full py-3 mt-6 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition disabled:opacity-70 disabled:cursor-not-allowed">Sedang mengunggah...</button>
 
             </form>
         </div>

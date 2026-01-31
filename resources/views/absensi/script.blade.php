@@ -3,11 +3,11 @@
         e.preventDefault();
 
         const files = document.getElementById('file-input').files;
-        const kategori = this.kategori.value;
+        const jenis_absen = this.jenis_absen.value;
         const tanggal = this.tanggal.value;
 
-        if (!kategori) {
-            showToast('error', 'Pilih kategori terlebih dahulu');
+        if (!jenis_absen) {
+            showToast('error', 'Pilih jenis absen terlebih dahulu');
             return;
         }
 
@@ -21,30 +21,26 @@
             return;
         }
 
-        if (files.length > 5) {
-            showToast('error', 'Maksimal 5 gambar sekali upload');
+        if (files.length > 1) {
+            showToast('error', 'Gambar tidak boleh lebih dari 1');
             return;
         }
 
         const uploadBtn = document.getElementById('uploadBtn');
-        const uploadBtnProcess = document.getElementById('uploadBtnProcess');
-
         uploadBtn.classList.add('hidden');
-        uploadBtnProcess.classList.remove('hidden');
-        uploadBtnProcess.disabled = true;
 
         const formData = new FormData();
-        formData.append('kategori', kategori);
+        formData.append('jenis_absen', jenis_absen);
         formData.append('tanggal', tanggal);
         formData.append('_token', '{{ csrf_token() }}');
 
         // Compress semua image
         for (const file of files) {
             const compressed = await compressImage(file, 0.7, 1280);
-            formData.append('screenshot[]', compressed, compressed.name);
+            formData.append('photo[]', compressed, compressed.name);
         }
 
-        uploadAjax(formData);
+        uploadAjax(formData, jenis_absen);
     });
 </script>
 
@@ -87,7 +83,7 @@
 </script>
 
 <script>
-    function uploadAjax(formData) {
+    function uploadAjax(formData, jenis_absen) {
         const wrapper = document.getElementById('progressWrapper');
         const bar = document.getElementById('progressBar');
         const text = document.getElementById('progressText');
@@ -99,7 +95,19 @@
         label.innerText = 'Mengunggah...';
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('upload.store') }}", true);
+
+        // Tentukan endpoint berdasarkan jenis absen
+        let url = '';
+        if (jenis_absen === 'pagi') {
+            url = "{{ route('absensi.store_morning') }}";
+        } else if (jenis_absen === 'sore') {
+            url = "{{ route('absensi.store_afternoon') }}";
+        } else {
+            showToast('error', 'Jenis absen tidak valid');
+            return;
+        }
+        
+        xhr.open('POST', url, true);
 
         // WAJIB untuk Laravel
         xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
@@ -140,13 +148,12 @@
                     bar.style.width = '0%';
                     text.innerText = '0%';
                     label.innerText = 'Mengunggah...';
-                    window.location.href = "{{ route('upload') }}";
+                    window.location.href = "{{ route('absensi') }}";
                 }, 1500);
 
             } else {
                 showError(res?.message);
                 document.getElementById('uploadBtn').classList.remove('hidden');
-                document.getElementById('uploadBtnProcess').classList.add('hidden');
             }
         };
 
@@ -159,7 +166,6 @@
             bar.classList.remove('from-emerald-500', 'to-emerald-600');
             bar.classList.add('bg-rose-500');
             showToast('error', msg);
-            window.location.href = "{{ route('upload') }}";
         }
     }
 
@@ -212,75 +218,6 @@
         }, 3000);
     }
 </script>
-
-<script>
-        document.addEventListener("DOMContentLoaded", () => {
-        const modal = document.getElementById("photo-modal");
-        const modalImg = document.getElementById("modal-img");
-        const closeBtn = document.getElementById('closeModal');
-        let currentPhotoId = null;
-
-        // Close modal saat tombol X diklik
-        closeBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-
-        if (!modal || !modalImg) return;
-
-        document.querySelectorAll(".photo-item").forEach((img) => {
-            img.addEventListener("click", () => {
-                modalImg.src = img.src;
-                currentPhotoId = img.dataset.id || null;
-                modal.classList.remove("hidden");
-                modal.classList.add("flex");
-            });
-        });
-
-        modal.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                modal.classList.add("hidden");
-                modal.classList.remove("flex");
-                currentPhotoId = null;
-            }
-        });
-
-        // tombol delete langsung hapus tanpa confirm
-        const deleteBtn = document.getElementById("delete-btn");
-        if (deleteBtn) {
-            deleteBtn.addEventListener("click", () => {
-                if (!currentPhotoId) return;
-
-                fetch(`/upload/${currentPhotoId}`, {
-                    method: "DELETE",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector(
-                            'meta[name="csrf-token"]'
-                        ).content,
-                    },
-                })
-                .then((res) => res.json())
-                .then((res) => {
-                    if (res.status === "success") {
-                        // hapus elemen foto dari DOM
-                        const imgToRemove = document.querySelector(
-                            `.photo-item[data-id="${currentPhotoId}"]`
-                        );
-                        if (imgToRemove) imgToRemove.parentElement.remove();
-                        currentPhotoId = null;
-                        modal.classList.add("hidden");
-                        modal.classList.remove("flex");
-                        showToast("success", "Foto berhasil dihapus");
-                    } else {
-                        showToast("error", res.message ?? "Gagal hapus foto");
-                    }
-                })
-                .catch(() => showToast("error", "Gagal hapus foto"));
-            });
-        }
-    });
-
-</script>
-
 
 <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[calc(100%-2rem)] rounded-xl shadow-xl border border-white/20 transition-all duration-300 opacity-0 -translate-y-3">
     <div class="flex items-center gap-3 px-4 py-3">

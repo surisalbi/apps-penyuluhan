@@ -18,6 +18,12 @@ class AkunController extends Controller
         return view('akun.profil', compact('title'));
     }
 
+    public function bantuan()
+    {
+        $title = "Pusat Bantuan";
+        return view('akun.bantuan', compact('title'));
+    }
+
     public function kebijakan()
     {
         $title = "Kebijakan Privasi";

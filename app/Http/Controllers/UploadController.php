@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Upload;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,32 +12,77 @@ class UploadController extends Controller
     public function index()
     {
         $title = "Upload";
+        $bulan = date("m");
 
-        $like_upload = Upload::select('id','kategori','screenshot','created_at')
+        $like_upload = Upload::select('id','kategori','screenshot','tanggal')
         ->where('user_id', auth()->id())
         ->where('kategori', 'like')
-        ->orderBy('id', 'desc')
+        ->whereMonth('tanggal', Carbon::now()->month)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
         ->get();
 
-        $comment_upload = Upload::select('id','kategori','screenshot','created_at')
+        $comment_upload = Upload::select('id','kategori','screenshot','tanggal')
         ->where('user_id', auth()->id())
         ->where('kategori', 'comment')
-        ->orderBy('id', 'desc')
+        ->whereMonth('tanggal', Carbon::now()->month)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
         ->get();
 
-        $share_upload = Upload::select('id','kategori','screenshot','created_at')
+        $share_upload = Upload::select('id','kategori','screenshot','tanggal')
         ->where('user_id', auth()->id())
         ->where('kategori', 'share')
-        ->orderBy('id', 'desc')
+        ->whereMonth('tanggal', Carbon::now()->month)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
         ->get();
 
-        return view('upload.index', compact('title','like_upload','comment_upload','share_upload'));
+        return view('upload.index', compact('title','like_upload','comment_upload','share_upload', 'bulan'));
+    }
+
+    public function show(Request $request)
+    {
+        $title = "Upload";
+
+        $request->validate([
+            'bulan' => 'required|numeric'
+        ]);
+
+        $bulan = $request->bulan;
+
+        $like_upload = Upload::select('id','kategori','screenshot','tanggal')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'like')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+        $comment_upload = Upload::select('id','kategori','screenshot','tanggal')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'comment')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+        $share_upload = Upload::select('id','kategori','screenshot','tanggal')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'share')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+        return view('upload.index', compact('title','like_upload','comment_upload','share_upload', 'bulan'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'kategori' => 'required|string',
+            'tanggal' => 'required|string',
             'screenshot' => 'required|array',
             'screenshot.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
@@ -67,6 +113,7 @@ class UploadController extends Controller
             Upload::create([
                 'user_id' => auth()->user()->id,
                 'kategori' => $request->kategori,
+                'tanggal' => $request->tanggal,
                 'screenshot' => $relativePath,
             ]);
         }
@@ -105,4 +152,5 @@ class UploadController extends Controller
             'message' => 'Foto berhasil dihapus'
         ]);
     }
+    
 }

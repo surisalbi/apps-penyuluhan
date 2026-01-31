@@ -58,16 +58,116 @@
         </div>
 
         @if (!$absensi)
-            <button onclick="window.location.href = '{{ route('absensi.in') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
+            {{-- <button onclick="window.location.href = '{{ route('absensi.in') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all"> --}}
+                {{-- <i class="fas fa-sign-in-alt pe-1"></i> Check In Time --}}
+            {{-- </button> --}}
+            <button onclick="openUploadModal()" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
                 <i class="fas fa-sign-in-alt pe-1"></i> Check In Time
             </button>
         @elseif($absensi && !$absensi->clock_out)
-            <button onclick="window.location.href = '{{ route('absensi.out') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
+            {{-- <button onclick="window.location.href = '{{ route('absensi.out') }}'" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all"> --}}
+                {{-- <i class="fas fa-sign-in-alt pe-1"></i> Check Out Time --}}
+            {{-- </button> --}}
+            <button onclick="openUploadModal()" class="w-full py-3 rounded-full text-white font-semibold shadow-md bg-gradient-to-r from-primary to-primaryDark hover:from-primaryDark hover:to-primaryDark active:scale-95 transition-all">
                 <i class="fas fa-sign-in-alt pe-1"></i> Check Out Time
             </button>
         @else
         @endif
     </div>
 </div>
+
+<div id="upload-modal" class="fixed inset-0 z-50 bg-black/50 hidden items-end justify-center">
+    <!-- Modal Box -->
+    <div id="upload-panel" class="w-full max-h-[90vh] bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-4 py-4 border-b">
+            <h2 class="text-lg font-semibold">
+                @if(!$absensi)
+                    Absen Pagi
+                @elseif($absensi && !$absensi->clock_out)
+                    Absen Sore
+                @else
+                @endif
+            </h2>
+            <button onclick="closeUploadModal()" class="text-gray-500 text-xl">&times;</button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-6">
+            <!-- Progress Wrapper -->
+            <div id="progressWrapper" class="mt-4 hidden">
+                <div class="flex justify-between text-xs mb-1">
+                    <span id="progressLabel" class="text-gray-600">Mengunggah...</span>
+                    <span id="progressText" class="text-gray-600">0%</span>
+                </div>
+
+                <div class="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                        id="progressBar"
+                        class="h-full w-0 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all duration-300 ease-out"
+                    ></div>
+                </div>
+            </div>
+            <p class="text-gray-500 mt-2 text-center mb-2">
+                Hari ini, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+            </p>
+            <!-- Action -->
+            <form id="uploadForm" enctype="multipart/form-data">
+                <!-- Drag Area -->
+                <label for="file-input" id="drop-area" class="flex flex-col items-center justify-center h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition text-center">
+                    <i class="fas fa-cloud-upload-alt text-5xl text-emerald-600 mb-3"></i>
+                    <p class="font-medium">Pilih foto dari galeri anda</p>
+                </label>
+
+                <!-- Preview Area -->
+                <div id="preview-container" class="hidden space-y-4">
+                    <!-- Grid Foto -->
+                    <div class="grid grid-cols-2 gap-3" id="preview-grid"></div>
+
+                    <!-- Action Preview -->
+                    <div class="flex gap-3">
+                        <button id="add-btn" class="flex-1 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
+
+                        <button id="clear-btn" class="flex-1 py-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <p class="text-xs text-gray-500 text-center mt-3">Format JPG, PNG &#183; Maks 5MB</p>
+
+                
+                <!-- Hidden Input -->
+                <input type="file" name="photo[]" id="file-input" accept="image/*" class="hidden" multiple/>
+                <button id="uploadBtn" class="w-full py-3 mt-6 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">Simpan</button>
+                <button id="uploadBtnProcess" class="hidden w-full py-3 mt-6 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition disabled:opacity-70 disabled:cursor-not-allowed">Sedang mengunggah...</button>
+
+
+                <!-- Progress Wrapper -->
+                <div id="progressWrapper" class="mt-4 hidden">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span id="progressLabel" class="text-gray-600">Mengunggah...</span>
+                        <span id="progressText" class="text-gray-600">0%</span>
+                    </div>
+
+                    <div class="w-full h-6 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                            id="progressBar"
+                            class="h-full w-0 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full transition-all duration-300 ease-out"
+                        ></div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+    @include('home.script')
+@endpush
 
 @endsection
