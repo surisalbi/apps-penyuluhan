@@ -29,7 +29,7 @@
 <main class="px-4 py-4 pb-24">
     <form action="{{ route('upload.show') }}" method="post" class="flex mb-6">
         @csrf
-        <select name="bulan" class="flex flex-1 border border-gray-300 rounded-lg px-2 py-2 text-gray-700">
+        <select name="bulan" class="flex flex-1 border bg-white border-gray-300 rounded-lg px-2 py-2 text-gray-700">
             <option value="" disabled selected>Tampilkan bulan</option>
             @for ($i=1; $i <= 12; $i++)
             <option value="{{ $i }}" {{ $i === (int) $bulan ? 'selected' : '' }}>
@@ -40,12 +40,16 @@
         <button type="submit" class="ms-2 px-4 py-2 bg-gray-400 rounded-lg text-white">
             <i class="fas fa-search"></i>
         </button>
+        <button type="button" onclick="window.location.href='{{ route('upload.download', $bulan) }}'" class="ms-2 px-4 py-2 bg-emerald-400 rounded-lg text-white">
+            <i class="fas fa-download"></i>
+        </button>
     </form>
+
     <!-- Like -->
     <section class="tab-content grid grid-cols-2 gap-3" id="like">
         @foreach ($like_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset($row->screenshot) }}"/>
+            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ encrypt($row->id) }}" data-src="{{ asset($row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
@@ -61,7 +65,7 @@
     <section class="tab-content hidden grid grid-cols-2 gap-3" id="comment">
         @foreach ($comment_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset($row->screenshot) }}"/>
+            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ encrypt($row->id) }}" data-src="{{ asset($row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
@@ -77,7 +81,7 @@
     <section class="tab-content hidden grid grid-cols-2 gap-3" id="share">
         @foreach ($share_upload as $row)
         <div class="relative aspect-[5/6] rounded-xl overflow-hidden shadow-sm">
-            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ $row->id }}" data-src="{{ asset($row->screenshot) }}"/>
+            <img src="{{ asset($row->screenshot) }}" class="w-full h-full object-cover photo-item" data-id="{{ encrypt($row->id) }}" data-src="{{ asset($row->screenshot) }}"/>
             <!-- Caption -->
             <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-3">
                 <p>&nbsp;</p>
@@ -98,6 +102,9 @@
         <button id="delete-btn" class="absolute top-3 right-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 shadow-2xl hover:bg-gray-300 transition" title="Hapus Foto">
             <i class="fas fa-trash text-sm text-red-500"></i>
         </button>
+        <button id="edit-btn" class="absolute top-3 right-16 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 shadow-2xl hover:bg-gray-300 transition" title="Hapus Foto">
+            <i class="fas fa-edit text-sm text-blue-500"></i>
+        </button>
         <button id="closeModal" class="absolute top-3 left-3 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 shadow-2xl hover:bg-gray-300 transition" title="Tutup">
             <i class="fas fa-times text-sm"></i>
         </button>
@@ -108,7 +115,7 @@
 
 <div id="upload-modal" class="fixed inset-0 z-50 bg-black/50 hidden items-end justify-center">
     <!-- Modal Box -->
-    <div id="upload-panel" class="w-full max-h-[90vh] bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
+    <div id="upload-panel" class="w-full h-full bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between px-4 py-4 border-b">
             <h2 class="text-lg font-semibold">Upload Foto</h2>
@@ -158,18 +165,20 @@
                 </div>
 
                 <!-- Info -->
-                <p class="text-xs text-gray-500 text-center mt-3">Format JPG, PNG &#183; Maks 5MB</p>
+                <p class="text-xs text-gray-500 text-center mt-3 mb-5">Format JPG, PNG &#183; Maks 5MB</p>
 
                 
                 <!-- Hidden Input -->
                 <input type="file" name="screenshot[]" id="file-input" accept="image/*" class="hidden" multiple/>
-                <select name="kategori" id="" class="border border-gray-400 rounded-lg w-full p-[14px] mt-5 mb-5 text-gray-700">
-                    <option value="" disabled selected>Pilih Kategori</option>
+                <span class="text-sm text-gray-400">Pilih Kategori</span>
+                <select name="kategori" id="" class="border border-gray-400 bg-white rounded-lg w-full p-[14px] mt-2 mb-5 text-gray-700">
+                    <option value="" selected disabled></option>
                     <option value="like">Like</option>
                     <option value="comment">Comment</option>
                     <option value="share">Share</option>
                 </select>
-                <input type="date" name="tanggal" class="border border-gray-400 rounded-lg w-full p-3 mb-5 text-gray-700">
+                <span class="text-sm text-gray-400">Pilih Tanggal</span>
+                <input type="date" name="tanggal" placeholder="Pilih Tanggal" class="border border-gray-400 rounded-lg w-full p-3 mb-5 mt-2 text-gray-700 bg-white">
                 <button id="uploadBtn" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">Upload</button>
                 <button id="uploadBtnProcess" class="hidden w-full py-3 mt-6 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition disabled:opacity-70 disabled:cursor-not-allowed">Sedang mengunggah...</button>
 

@@ -11,6 +11,17 @@
     </div>
     <!-- Content -->
     <main class="px-4 py-4 space-y-4 pb-24">
+        @if (session('success'))
+            <!-- Alert statis -->
+            <div class="w-full max-w-sm mx-auto bg-emerald-100 border border-emerald-400 text-emerald-800 px-4 py-3 rounded-full text-sm flex items-center space-x-3 mt-4" role="alert">
+                <!-- Icon -->
+                <i class="fas fa-info-circle"></i>
+
+                <!-- Message -->
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
+
+        @endif
         <form action="{{ route('absensi.show') }}" method="post" class="flex">
             @csrf
             <select name="bulan" class="flex flex-1 border border-gray-300 rounded-lg px-2 py-2 text-gray-700">
@@ -46,7 +57,7 @@
         <!-- Card -->
         <div class="{{ $loop->first ? 'bg-gray-100' : '' }} rounded-xl {{ $loop->first ? 'border-2' : 'border border-1' }} border-gray-250 p-4">
             <div class="flex justify-between items-center mb-3">
-                <div>
+                <div class="flex flex-1">
                     <p class="font-medium text-sm text-gray-700">
                         {{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}
                     </p>
@@ -73,6 +84,9 @@
                 <span class="text-xs font-medium px-3 py-1 rounded-md {{ $bgColor }} {{ $textColor }}">
                     {{ $text }}
                 </span>
+                <a href="{{ route('absensi.edit', encrypt($row->id)) }}" class="bg-gray-100 px-2 py-2 ms-1 rounded-md flex justify-center item-center">
+                    <i class="fas fa-cog text-gray-400 text-xs"></i>
+                </a>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
@@ -91,7 +105,7 @@
 
 <div id="upload-modal" class="fixed inset-0 z-50 bg-black/50 hidden items-end justify-center">
     <!-- Modal Box -->
-    <div id="upload-panel" class="w-full max-h-[90vh] bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
+    <div id="upload-panel" class="w-full h-full bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between px-4 py-4 border-b">
             <h2 class="text-lg font-semibold">Absen</h2>
@@ -146,12 +160,13 @@
                 
                 <!-- Hidden Input -->
                 <input type="file" name="photo[]" id="file-input" accept="image/*" class="hidden" multiple/>
-                <select name="jenis_absen" id="" class="border border-gray-400 rounded-lg w-full p-[14px] mt-5 mb-5 text-gray-700">
+                <select name="jenis_absen" id="" class="border border-gray-400 bg-white rounded-lg w-full p-[14px] mt-5 mb-5 text-gray-700">
                     <option value="" disabled selected>Pilih Absen Pagi / Sore</option>
                     <option value="pagi">Pagi</option>
                     <option value="sore">Sore</option>
                 </select>
-                <input type="date" name="tanggal" class="border border-gray-400 rounded-lg w-full p-3 mb-5 text-gray-700">
+                <span class="text-sm text-gray-400">Pilih Kategori</span>
+                <input type="date" name="tanggal" class="border border-gray-400 bg-white rounded-lg w-full p-3 mb-5 mt-2 text-gray-700">
                 <button id="uploadBtn" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-medium hover:bg-emerald-700 transition">Upload</button>
 
 

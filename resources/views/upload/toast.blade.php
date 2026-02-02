@@ -218,6 +218,7 @@
         const modal = document.getElementById("photo-modal");
         const modalImg = document.getElementById("modal-img");
         const closeBtn = document.getElementById('closeModal');
+        
         let currentPhotoId = null;
 
         // Close modal saat tombol X diklik
@@ -243,6 +244,15 @@
                 currentPhotoId = null;
             }
         });
+
+        const editBtn = document.getElementById('edit-btn');
+        if (editBtn) {
+            editBtn.addEventListener("click", () => {
+                if (!currentPhotoId) return;
+
+                window.location.href = `/upload/edit/${currentPhotoId}`;
+            });
+        }
 
         // tombol delete langsung hapus tanpa confirm
         const deleteBtn = document.getElementById("delete-btn");

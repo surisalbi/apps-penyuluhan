@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\Absensi;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
@@ -13,7 +14,7 @@ class AbsensiController extends Controller
     public function index()
     {
         $title = "Absensi";
-        $absensi = Absensi::select('created_at','clock_in','clock_out','status','tanggal')
+        $absensi = Absensi::select('id','created_at','clock_in','clock_out','status','tanggal')
         ->where('user_id', auth()->user()->id)
         ->whereMonth('tanggal', Carbon::now()->month)
         ->whereYear('tanggal', Carbon::now()->year)
@@ -21,6 +22,34 @@ class AbsensiController extends Controller
         ->get();
         $bulan = date("m");
         return view('absensi.index', compact('title', 'absensi', 'bulan'));
+    }
+
+    public function show(Request $request)
+    {
+        $request->validate([
+            'bulan' => 'required|numeric'
+        ]);
+
+        $bulan = $request->bulan;
+
+        $title = "Absensi Bulanan";
+        $absensi = Absensi::select('id','created_at','clock_in','clock_out','status','tanggal')
+        ->where('user_id', auth()->user()->id)
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+        return view('absensi.index', compact('title', 'absensi', 'bulan'));
+    }
+
+    public function edit($id)
+    {
+        $title = "Absensi";
+        $absensi = Absensi::select('id','clock_in','clock_out','foto_in','foto_out','status','tanggal')
+        ->where('user_id', auth()->user()->id)
+        ->where('id', decrypt($id))
+        ->firstOrFail();
+        return view('absensi.edit', compact('title', 'absensi'));
     }
 
     public function in()
@@ -39,7 +68,7 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'photo' => 'required|array',
-            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
         ]);
@@ -73,6 +102,7 @@ class AbsensiController extends Controller
                 'clock_in'  => Carbon::now('Asia/Jakarta'),
                 'latitude_in'  => $request->latitude,
                 'longitude_in' => $request->longitude,
+                'tanggal' => Carbon::today()
             ]);
         }
 
@@ -87,7 +117,7 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'photo' => 'required|array',
-            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
         ]);
@@ -131,6 +161,7 @@ class AbsensiController extends Controller
                 'clock_out'  => Carbon::now('Asia/Jakarta'),
                 'latitude_out'  => $request->latitude,
                 'longitude_out' => $request->longitude,
+                'tanggal' => Carbon::today()
             ]);
             
         }
@@ -148,7 +179,7 @@ class AbsensiController extends Controller
             'jenis_absen' => 'required|string',
             'tanggal' => 'required|date',
             'photo' => 'required|array',
-            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
         ]);
@@ -211,7 +242,7 @@ class AbsensiController extends Controller
             'jenis_absen' => 'required|string',
             'tanggal' => 'required|date',
             'photo' => 'required|array',
-            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
             'latitude' => 'nullable',
             'longitude' => 'nullable',
         ]);
@@ -367,22 +398,87 @@ class AbsensiController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function update(Request $request, $id)
     {
+        $absensi = Absensi::findOrFail(decrypt($id));
+
+        // Validasi
         $request->validate([
-            'bulan' => 'required|numeric'
+            'tanggal'   => 'required|date',
+            'clock_in'  => 'nullable',
+            'clock_out' => 'nullable',
+            'foto_in'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'foto_out'  => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        $bulan = $request->bulan;
+        // Update data utama
+        $absensi->tanggal   = $request->tanggal;
+        $absensi->clock_in  = $request->clock_in;
+        $absensi->clock_out = $request->clock_out;
 
-        $title = "Absensi Bulanan";
-        $absensi = Absensi::select('created_at','clock_in','clock_out','status','tanggal')
-        ->where('user_id', auth()->user()->id)
-        ->whereMonth('tanggal', $bulan)
-        ->whereYear('tanggal', Carbon::now()->year)
-        ->orderBy('tanggal', 'desc')
-        ->get();
-        return view('absensi.index', compact('title', 'absensi', 'bulan'));
+        $path_in = public_path('uploads/absensi/in');
+        $path_out = public_path('uploads/absensi/out');
+
+        // Pastikan folder ada
+        if (!File::exists($path_in)) {
+            File::makeDirectory($path_in, 0755, true);
+        }
+
+        if (!File::exists($path_out)) {
+            File::makeDirectory($path_out, 0755, true);
+        }
+
+        /** =================
+         * FOTO PAGI
+         * ================= */
+        if ($request->hasFile('foto_in')) {
+            // hapus foto lama
+            if ($absensi->foto_in && File::exists(public_path($absensi->foto_in))) {
+                File::delete(public_path($absensi->foto_in));
+            }
+
+            $file = $request->file('foto_in');
+            $fileName = uniqid('in_') . '.' . $file->getClientOriginalExtension();
+
+            $file->move($path_in, $fileName);
+
+            $absensi->foto_in = 'uploads/absensi/in/' . $fileName;
+        }
+
+        /** =================
+         * FOTO SORE
+         * ================= */
+        if ($request->hasFile('foto_out')) {
+            // hapus foto lama
+            if ($absensi->foto_out && File::exists(public_path($absensi->foto_out))) {
+                File::delete(public_path($absensi->foto_out));
+            }
+
+            $file = $request->file('foto_out');
+            $fileName = uniqid('out_') . '.' . $file->getClientOriginalExtension();
+
+            $file->move($path_out, $fileName);
+
+            $absensi->foto_out = 'uploads/absensi/out/' . $fileName;
+        }
+
+        $absensi->save();
+
+        return back()->with('success', 'Data absensi berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $absensi = Absensi::find(decrypt($id));
+        if ($absensi->foto_out && File::exists(public_path($absensi->foto_out))) {
+            File::delete(public_path($absensi->foto_out));
+        }
+        if ($absensi->foto_in && File::exists(public_path($absensi->foto_in))) {
+            File::delete(public_path($absensi->foto_in));
+        }
+        $absensi->delete();
+
+        return redirect('/absensi')->with('success', 'Data absensi berhasil diperbarui');
     }
 
     public function download($bulan)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Upload;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -78,13 +79,44 @@ class UploadController extends Controller
         return view('upload.index', compact('title','like_upload','comment_upload','share_upload', 'bulan'));
     }
 
+    public function download($bulan)
+    {
+        $like_upload = Upload::select('id','kategori','screenshot','tanggal')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'like')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+        $comment_upload = Upload::select('id','kategori','screenshot','tanggal')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'comment')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+        $share_upload = Upload::select('id','kategori','screenshot','tanggal')
+        ->where('user_id', auth()->id())
+        ->where('kategori', 'share')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', Carbon::now()->year)
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+        $pdf = Pdf::loadView('upload.download', compact('like_upload','comment_upload','share_upload','bulan'))
+              ->setPaper('A4', 'portrait');
+        return $pdf->download('Data Screenshot '.\Carbon\Carbon::createFromDate(null, (int)$bulan, 1)->translatedFormat('F').' '.Carbon::now()->year.' .pdf');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'kategori' => 'required|string',
             'tanggal' => 'required|string',
             'screenshot' => 'required|array',
-            'screenshot.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'screenshot.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $paths = [];
@@ -125,10 +157,39 @@ class UploadController extends Controller
         ]);
     }
 
+    public function edit($id)
+    {
+        $title = "Schreenshot";
+        $upload = Upload::select('id','kategori','tanggal')
+        ->where('user_id', auth()->user()->id)
+        ->where('id', decrypt($id))
+        ->firstOrFail();
+        return view('upload.edit', compact('title', 'upload'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $upload = Upload::findOrFail(decrypt($id));
+
+        // Validasi
+        $request->validate([
+            'kategori'   => 'required',
+            'tanggal'    => 'required|date',
+        ]);
+
+        // Update data utama
+        $upload->kategori  = $request->kategori;
+        $upload->tanggal   = $request->tanggal;
+
+        $upload->save();
+
+        return back()->with('success', 'Data berhasil diperbarui');
+    }
+
     public function destroy($id)
     {
         // Ambil data upload dari DB
-        $upload = Upload::find($id);
+        $upload = Upload::find(decrypt($id));
 
         if (!$upload) {
             return response()->json([

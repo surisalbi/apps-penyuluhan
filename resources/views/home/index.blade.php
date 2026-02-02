@@ -78,7 +78,7 @@
 
 <div id="upload-modal" class="fixed inset-0 z-50 bg-black/50 hidden items-end justify-center">
     <!-- Modal Box -->
-    <div id="upload-panel" class="w-full max-h-[90vh] bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
+    <div id="upload-panel" class="w-full h-full bg-white transform translate-y-full transition-transform duration-300 overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between px-4 py-4 border-b">
             <h2 class="text-lg font-semibold">

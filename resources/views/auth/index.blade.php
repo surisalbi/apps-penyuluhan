@@ -58,7 +58,7 @@
 
                     <!-- Input -->
                     <div class="mt-6">
-                        <input type="text" name="password" placeholder="Password" class="w-full px-5 py-3 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary"/>
+                        <input type="password" name="password" placeholder="Password" class="w-full px-5 py-3 rounded-full border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary"/>
                     </div>
 
                     <!-- Button -->

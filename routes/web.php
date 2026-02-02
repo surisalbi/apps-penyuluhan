@@ -29,6 +29,12 @@ Route::post('/absensi', [AbsensiController::class, 'show'])->name('absensi.show'
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::get('/absensi/download/{bulan}', [AbsensiController::class, 'download'])->name('absensi.download')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/absensi/edit/{id}', [AbsensiController::class, 'edit'])->name('absensi.edit')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::put('/absensi/{id}', [AbsensiController::class, 'update'])->name('absensi.update')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy')
+->middleware(['auth', 'otp_verified', 'role:user']);
 
 // Facecam Absen Pagi
 Route::get('/absensi/in', [AbsensiController::class, 'in'])->name('absensi.in')
@@ -55,7 +61,13 @@ Route::get('/upload', [UploadController::class, 'index'])->name('upload')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::post('/upload', [UploadController::class, 'show'])->name('upload.show')
 ->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/upload/download/{bulan}', [UploadController::class, 'download'])->name('upload.download')
+->middleware(['auth', 'otp_verified', 'role:user']);
 Route::post('/upload/store', [UploadController::class, 'store'])->name('upload.store')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::get('/upload/edit/{id}', [UploadController::class, 'edit'])->name('upload.edit')
+->middleware(['auth', 'otp_verified', 'role:user']);
+Route::put('/upload/{id}', [UploadController::class, 'update'])->name('upload.update')
 ->middleware(['auth', 'otp_verified', 'role:user']);
 Route::delete('/upload/{id}', [UploadController::class, 'destroy'])->name('upload.destroy')
 ->middleware(['auth', 'otp_verified', 'role:user']);
